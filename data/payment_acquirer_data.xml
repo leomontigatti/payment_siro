@@ -2,7 +2,7 @@
 <odoo>
     <data>
 
-        <record id="payment.payment_acquirer_siro" model="payment.acquirer">
+        <record id="payment_acquirer_siro" model="payment.acquirer">
             <field name="name">SIRO</field>
             <!-- <field name="image_128" type="base64" file="payment_paypal/static/src/img/paypal_icon.png"/> -->
             <field name="provider">siro</field>
