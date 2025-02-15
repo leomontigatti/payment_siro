@@ -6,10 +6,11 @@
             <form string="SIRO Configuration">
                 <group>
                     <field name="provider"/>
-                    <field name="siro_user"/>
+                    <field name="siro_username"/>
+                    <field name="siro_nro_empresa"/>
                     <field name="siro_password" password="True"/>
-                    <field name="siro_api_key" readonly="1"/>
-                    <field name="siro_date_range"/>
+                    <field name="siro_access_token" readonly="1"/>
+                    <field name="siro_access_token_expiry" readonly="1"/>
                 </group>
             </form>
         </field>
