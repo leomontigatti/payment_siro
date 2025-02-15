@@ -8,24 +8,22 @@ from odoo.exceptions import ValidationError
 class PaymentAcquirerSIRO(models.Model):
     _inherit = "payment.acquirer"
 
-    provider = fields.Selection(
-        selection_add=[("siro", "SIRO")], ondelete={"siro": "set default"}
-    )
+    provider = fields.Selection(selection_add=[("siro", "SIRO")], ondelete="set null")
     siro_username = fields.Char(
         string="Usuario SIRO",
         help="CUIT del administrador de SIRO.",
-        required_if_provider="siro",
+        # required_if_provider="siro",
         # default=lambda self: self.env.company.cuit,  # Revisar si este atributo existe
     )
     siro_nro_empresa = fields.Char(
         string="Número de convenio SIRO",
         help="Número de identificación del convenio (compuesto por los 10 dígitos que identifican al convenio, provistos por el banco).",
-        required_if_provider="siro",
+        # required_if_provider="siro",
     )
     siro_password = fields.Char(
         string="Contraseña SIRO",
         help="Proporcionado por SIRO al momento del pasaje a producción, solicitar a mesadeayuda@bancoroela.com.ar",
-        required_if_provider="siro",
+        # required_if_provider="siro",
     )
     siro_access_token = fields.Char(string="Token de la API", readonly=True)
     siro_access_token_expiry = fields.Datetime(
