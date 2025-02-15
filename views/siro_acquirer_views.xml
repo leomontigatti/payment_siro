@@ -3,16 +3,16 @@
         <field name="name">payment.acquirer.siro.form</field>
         <field name="model">payment.acquirer</field>
         <field name="arch" type="xml">
-            <form string="SIRO Configuration">
-                <group>
-                    <field name="provider"/>
+            <xpath expr='//group[@name="acquirer"]' position='inside'>
+                <group attrs="{'invisible': [('provider', '!=', 'siro')]}">
+                    <field name="provider" attrs="{'required':[ ('provider', '=', 'siro'), ('state', '!=', 'disabled')]}"/>
                     <field name="siro_username"/>
                     <field name="siro_nro_empresa"/>
                     <field name="siro_password" password="True"/>
                     <field name="siro_access_token" readonly="1"/>
                     <field name="siro_access_token_expiry" readonly="1"/>
                 </group>
-            </form>
+            </xpath>
         </field>
     </record>
 </odoo>
