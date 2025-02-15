@@ -8,7 +8,6 @@
     "data": [
         "security/ir.model.access.csv",
         "views/siro_acquirer_views.xml",
-        "views/siro_transaction_views.xml",
         "data/siro_journal_data.xml",
     ],
     "installable": True,
