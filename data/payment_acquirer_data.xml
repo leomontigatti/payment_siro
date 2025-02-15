@@ -9,6 +9,7 @@
             <field name="company_id" ref="base.main_company"/>
             <!-- <field name="view_template_id" ref="paypal_form"/> -->
             <field name="journal_id" ref="account_journal_siro"/>
+            <field name="state">disabled</field>
         </record>
 
     </data>
