@@ -1,0 +1,8 @@
+<odoo>
+    <record id="account_journal_siro" model="account.journal">
+        <field name="name">SIRO</field>
+        <field name="code">SIRO</field>
+        <field name="type">bank</field>
+        <field name="company_id" eval="1"/>
+    </record>
+</odoo>
