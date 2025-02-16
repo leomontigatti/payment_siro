@@ -35,7 +35,7 @@ class PaymentTransactionSIRO(models.Model):
                 "state": "done",
                 "type": "server2server",
                 "partner_id": partner.id,
-                "date": payment_date,
+                "date": f"{payment_date[0:4]}-{payment_date[4:6]}-{payment_date[6:8]}",  # YYYY-MM-DD
                 "invoice_ids": self._get_partner_invoices(partner.id),
                 "currency_id": 19,  # ARS
             }
