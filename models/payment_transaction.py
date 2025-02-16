@@ -48,7 +48,8 @@ class PaymentTransactionSIRO(models.Model):
         acquirer._get_access_token()
 
         today = fields.Datetime.now()
-        yesterday = today - timedelta(days=1)
+        # yesterday = today - timedelta(days=1)
+        yesterday = today - timedelta(days=30)
 
         headers = {
             "Authorization": f"Bearer {acquirer.siro_access_token}",
