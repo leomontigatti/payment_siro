@@ -37,6 +37,7 @@ class PaymentTransactionSIRO(models.Model):
                 "partner_id": partner.id,
                 "date": payment_date,
                 "invoice_ids": self._get_partner_invoices(partner.id),
+                "currency_id": 19,  # ARS
             }
         )
 
