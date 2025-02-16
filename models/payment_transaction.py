@@ -21,17 +21,18 @@ class PaymentTransactionSIRO(models.Model):
     def _create_transactions(
         self,
         payment_date,
-        ammount,
+        amount_paid,
         customer_id,
     ):
         acquirer = self.env["payment.acquirer"].search([("provider", "=", "siro")])
         partner = self.env["res.partner"].search([("internal_code", "=", customer_id)])
+        amount = float(amount_paid) / 100
 
         self.create(
             {
                 "acquirer_id": acquirer.id,
-                "amount": ammount,
-                "reference": f"Pago por transferencia SIRO. Importe: ${ammount}.",
+                "amount": amount,
+                "reference": f"Pago por transferencia SIRO. Importe: ${amount}.",
                 "state": "done",
                 "type": "server2server",
                 "partner_id": partner.id,
