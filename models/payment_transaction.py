@@ -33,7 +33,7 @@ class PaymentTransactionSIRO(models.Model):
                 "amount": ammount,
                 "reference": f"Pago por transferencia SIRO. Importe: ${ammount}.",
                 "state": "done",
-                "type": "inbound",
+                "type": "server2server",
                 "partner_id": partner.id,
                 "date": payment_date,
                 "invoice_ids": self._get_partner_invoices(partner.id),
