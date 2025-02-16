@@ -30,39 +30,39 @@ class PaymentAcquirerSIRO(models.Model):
         string="Fecha de caducidad del token", readonly=True
     )
 
-    # @api.depends("siro_username", "siro_password")
-    # def _get_access_token(self):
-    #     if (
-    #         self.siro_access_token
-    #         and fields.Datetime.now() < self.siro_access_token_expiry
-    #     ):
-    #         return
+    @api.depends("siro_username", "siro_password")
+    def _get_access_token(self):
+        if (
+            self.siro_access_token
+            and fields.Datetime.now() < self.siro_access_token_expiry
+        ):
+            return
 
-    #     SESSION_URL = "https://apisesion.bancoroela.com.ar/auth/sesion"
-    #     headers = {"Content-Type": "application/json"}
-    #     payload = {"Usuario": self.siro_username, "Password": self.siro_password}
+        SESSION_URL = "https://apisesion.bancoroela.com.ar/auth/sesion"
+        headers = {"Content-Type": "application/json"}
+        payload = {"Usuario": self.siro_username, "Password": self.siro_password}
 
-    #     try:
-    #         response = requests.post(SESSION_URL, headers=headers, json=payload)
-    #         try:
-    #             response.raise_for_status()
-    #         except requests.exceptions.HTTPError:
-    #             message = response.json().get("message", "")
-    #             raise ValidationError(
-    #                 f"Error en la comunicación con la API. Detalles: {message}"
-    #             )
-    #     except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
-    #         raise ValidationError("No se pudo establecer la conexión con la API.")
+        try:
+            response = requests.post(SESSION_URL, headers=headers, json=payload)
+            try:
+                response.raise_for_status()
+            except requests.exceptions.HTTPError:
+                message = response.json().get("message", "")
+                raise ValidationError(
+                    f"Error en la comunicación con la API. Detalles: {message}"
+                )
+        except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
+            raise ValidationError("No se pudo establecer la conexión con la API.")
 
-    #     json_response = response.json()
-    #     access_token = json_response.get("access_token")
-    #     if not access_token:
-    #         raise ValidationError("No se pudo obtener el token de acceso.")
+        json_response = response.json()
+        access_token = json_response.get("access_token")
+        if not access_token:
+            raise ValidationError("No se pudo obtener el token de acceso.")
 
-    #     self.write(
-    #         {
-    #             "siro_access_token": access_token,
-    #             "siro_access_token_expiry": fields.Datetime.now()
-    #             + timedelta(seconds=json_response.get("expires_in")),
-    #         }
-    #     )
+        self.write(
+            {
+                "siro_access_token": access_token,
+                "siro_access_token_expiry": fields.Datetime.now()
+                + timedelta(seconds=json_response.get("expires_in")),
+            }
+        )

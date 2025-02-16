@@ -9,6 +9,7 @@
         "security/ir.model.access.csv",
         "data/siro_journal_data.xml",
         "data/payment_acquirer_data.xml",
+        "data/cron_process_transactions.xml",
         "views/siro_acquirer_views.xml",
     ],
     "installable": True,
