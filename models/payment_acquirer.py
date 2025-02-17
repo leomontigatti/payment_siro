@@ -1,8 +1,10 @@
+import logging
 from datetime import timedelta
 
 import requests
 from odoo import api, fields, models
-from odoo.exceptions import ValidationError
+
+_logger = logging.getLogger(__name__)
 
 
 class PaymentAcquirerSIRO(models.Model):
@@ -12,18 +14,14 @@ class PaymentAcquirerSIRO(models.Model):
     siro_username = fields.Char(
         string="Usuario SIRO",
         help="CUIT del administrador de SIRO.",
-        # required_if_provider="siro",
-        # default=lambda self: self.env.company.cuit,  # Revisar si este atributo existe
     )
     siro_nro_empresa = fields.Char(
         string="Número de convenio SIRO",
         help="Número de identificación del convenio (compuesto por los 10 dígitos que identifican al convenio, provistos por el banco).",
-        # required_if_provider="siro",
     )
     siro_password = fields.Char(
         string="Contraseña SIRO",
         help="Proporcionado por SIRO al momento del pasaje a producción, solicitar a mesadeayuda@bancoroela.com.ar",
-        # required_if_provider="siro",
     )
     siro_access_token = fields.Char(string="Token de la API", readonly=True)
     siro_access_token_expiry = fields.Datetime(
@@ -48,16 +46,19 @@ class PaymentAcquirerSIRO(models.Model):
                 response.raise_for_status()
             except requests.exceptions.HTTPError:
                 message = response.json().get("message", "")
-                raise ValidationError(
+                _logger.error(
                     f"Error en la comunicación con la API. Detalles: {message}"
                 )
+                return False
         except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
-            raise ValidationError("No se pudo establecer la conexión con la API.")
+            _logger.error("No se pudo establecer la conexión con la API.")
+            return False
 
         json_response = response.json()
         access_token = json_response.get("access_token")
         if not access_token:
-            raise ValidationError("No se pudo obtener el token de acceso.")
+            _logger.error("No se pudo obtener el token de acceso.")
+            return False
 
         self.write(
             {
@@ -66,3 +67,5 @@ class PaymentAcquirerSIRO(models.Model):
                 + timedelta(seconds=json_response.get("expires_in")),
             }
         )
+
+        _logger.info("Token de acceso SIRO actualizado.")
