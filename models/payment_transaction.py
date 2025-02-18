@@ -11,36 +11,42 @@ _logger = logging.getLogger(__name__)
 class PaymentTransactionSIRO(models.Model):
     _inherit = "payment.transaction"
 
-    siro_reference_string = fields.Char("String de referencia SIRO", readonly=True)
+    siro_payment_id = fields.Char("ID de pago SIRO", readonly=True)
 
-    def _create_transaction(self, payment_string):
+    def _create_transaction(
+        self, payment_date, paid_amount, customer_id, payment_method, payment_id
+    ):
         acquirer = self.env["payment.acquirer"].search(
             [("provider", "=", "siro")], limit=1
         )
         partner = self.env["res.partner"].search(
-            [("internal_code", "=", payment_string[37:43])], limit=1
+            [("internal_code", "=", customer_id)], limit=1
         )
-        amount = float(payment_string[24:35]) / 100
-        date = f"{payment_string[0:4]}-{payment_string[4:6]}-{payment_string[6:8]}"
+        amount = float(paid_amount) / 100
+        date = f"{payment_date[0:4]}-{payment_date[4:6]}-{payment_date[6:8]}"
         invoices = self.env["account.move"].search(
             [("partner_id", "=", partner.id), ("amount_residual", "!=", 0)]
         )
         currency = self.env["res.currency"].search([("name", "=", "ARS")], limit=1)
-        payment_method = "transferencia." if payment_string[123:126] == "TI" else ""
+        method = "transferencia." if payment_method == "TI" else ""
+
+        if self.search([("siro_payment_id", "=", payment_id)], limit=1):
+            _logger.info(f"La transacción con ID {payment_id} ya existe en el sistema.")
+            return False
 
         try:
             self.create(
                 {
                     "acquirer_id": acquirer.id,
                     "amount": amount,
-                    "reference": f"Pago por {payment_method}. Importe: ${amount}. Fecha de pago: {date}.",
+                    "reference": f"Pago por {method}. Importe: ${amount}. Fecha de pago: {date}.",
                     "state": "done",
                     "type": "server2server",
                     "partner_id": partner.id,
                     "date": date,
                     "invoice_ids": invoices.ids,
                     "currency_id": currency.id,
-                    "siro_reference_string": payment_string,
+                    "siro_payment_id": payment_id,
                 }
             )
         except ValidationError as e:
@@ -95,7 +101,11 @@ class PaymentTransactionSIRO(models.Model):
         transactions_amount = 0
         for payment in payments:
             transaction_created = self._create_transaction(
-                payment[0:8], payment[24:35], payment[37:43], payment[123:126]
+                payment[0:8],
+                payment[24:35],
+                payment[37:43],
+                payment[123:126],
+                payment[226:236],
             )
             transactions_amount += 1 if transaction_created else 0
 
