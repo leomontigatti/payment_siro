@@ -120,15 +120,3 @@ class PaymentTransactionSIRO(models.Model):
             )
         else:
             _logger.info(f"{success_msg} No se crearon transacciones nuevas.")
-
-
-class PaymentTransactionWizard(models.TransientModel):
-    _name = "payment.transaction.wizard"
-    _description = "Modelo para procesar transacciones manualmente"
-
-    date_from = fields.Date(string="Fecha desde", required=True)
-    date_to = fields.Date(string="Fecha hasta", required=True)
-
-    def process_transactions_manually(self):
-        self.ensure_one()
-        PaymentTransactionSIRO._process_transactions(self.date_from, self.date_to)
