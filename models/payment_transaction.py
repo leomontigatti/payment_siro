@@ -77,12 +77,16 @@ class PaymentTransactionSIRO(models.Model):
             "Content-Type": "application/json",
         }
         payload = {
-            # "fecha_desde": yesterday.strftime("%Y-%m-%d"),
-            # "fecha_desde": fields.Date.to_string(yesterday),
-            "fecha_desde": fields.Date.to_string(date_from) if date_from else yesterday,
-            # "fecha_hasta": today.strftime("%Y-%m-%d"),
-            # "fecha_hasta": fields.Date.to_string(today),
-            "fecha_hasta": fields.Date.to_string(date_to) if date_to else today,
+            "fecha_desde": (
+                fields.Date.to_string(date_from)
+                if date_from
+                else yesterday.strftime("%Y-%m-%d")
+            ),
+            "fecha_hasta": (
+                fields.Date.to_string(date_to)
+                if date_to
+                else today.strftime("%Y-%m-%d")
+            ),
             "cuit_administrador": acquirer.siro_username,
             "nro_empresa": acquirer.siro_nro_empresa,
         }
