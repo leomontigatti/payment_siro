@@ -11,6 +11,7 @@
         "data/payment_acquirer_data.xml",
         "data/cron_process_transactions.xml",
         "views/siro_acquirer_views.xml",
+        "views/payment_transaction.xml",
     ],
     "installable": True,
     "application": True,
