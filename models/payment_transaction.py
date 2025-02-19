@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 
 import requests
 from odoo import fields, models
@@ -21,6 +22,7 @@ class PaymentTransactionSIRO(models.Model):
         partner = self.env["res.partner"].search(
             [("internal_code", "=", customer_id)], limit=1
         )
+        date_time = datetime.strptime(payment_date, "%Y%m%d")
         amount = float(paid_amount) / 100
         invoices = self.env["account.move"].search(
             [("partner_id", "=", partner.id), ("amount_residual", "!=", 0)]
@@ -41,9 +43,7 @@ class PaymentTransactionSIRO(models.Model):
                     "state": "done",
                     "type": "server2server",
                     "partner_id": partner.id,
-                    "date": fields.Datetime.to_datetime(
-                        f"{payment_date[0:4]}-{payment_date[4:6]}-{payment_date[6:8]}"
-                    ),
+                    "date": date_time,
                     "invoice_ids": invoices.ids,
                     "currency_id": currency.id,
                     "siro_payment_id": payment_id,
