@@ -10,6 +10,8 @@
         "data/siro_journal_data.xml",
         "data/payment_acquirer_data.xml",
         "data/cron_process_transactions.xml",
+        "views/payment_transaction_wizard.xml",
+        "views/wizard_actions.xml",
         "views/payment_views.xml",
     ],
     "installable": True,

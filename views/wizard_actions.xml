@@ -1,0 +1,11 @@
+<odoo>
+    <data>
+        <record id="payment_transaction_wizard_action" model="ir.actions.act_window">
+            <field name="name">Procesar transacciones manualmente</field>
+            <field name="res_model">payment.transaction.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="payment_siro.payment_transaction_form_wizard"/>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

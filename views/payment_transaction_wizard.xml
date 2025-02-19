@@ -1,0 +1,22 @@
+<odoo>
+    <data>
+        <record id="payment_transaction_form_wizard" model="ir.ui.view">
+            <field name="name">payment.transaction.form.wizard</field>
+            <field name="model">payment.transaction.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Procesar transacciones manualmente">
+                    <sheet>
+                        <group>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="process_transactions_manually" string="Procesar" type="object" class="btn-primary"/>
+                        <button string="Cancelar" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>
