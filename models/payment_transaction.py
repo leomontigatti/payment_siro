@@ -22,12 +22,12 @@ class PaymentTransactionSIRO(models.Model):
             [("internal_code", "=", customer_id)], limit=1
         )
         amount = float(paid_amount) / 100
-        date = f"{payment_date[0:4]}-{payment_date[4:6]}-{payment_date[6:8]}"
+        date = f"{payment_date[6:8]}/{payment_date[4:6]}/{payment_date[0:4]}"
         invoices = self.env["account.move"].search(
             [("partner_id", "=", partner.id), ("amount_residual", "!=", 0)]
         )
         currency = self.env["res.currency"].search([("name", "=", "ARS")], limit=1)
-        method = "transferencia." if payment_method == "TI" else ""
+        method = "Pago por transferencia. " if payment_method == "TI " else ""
 
         if self.search([("siro_payment_id", "=", payment_id)], limit=1):
             _logger.info(f"La transacción con ID {payment_id} ya existe en el sistema.")
@@ -38,11 +38,11 @@ class PaymentTransactionSIRO(models.Model):
                 {
                     "acquirer_id": acquirer.id,
                     "amount": amount,
-                    "reference": f"Pago por {method}. Importe: ${amount}. Fecha de pago: {date}.",
+                    "reference": f"{method}Importe: ${amount}. Fecha de pago: {date}.",
                     "state": "done",
                     "type": "server2server",
                     "partner_id": partner.id,
-                    "date": date,
+                    "date": fields.Datetime.to_datetime(date),
                     "invoice_ids": invoices.ids,
                     "currency_id": currency.id,
                     "siro_payment_id": payment_id,
