@@ -1,5 +1,4 @@
 import logging
-from datetime import timedelta
 
 import requests
 from odoo import fields, models
@@ -57,7 +56,7 @@ class PaymentTransactionSIRO(models.Model):
 
         return True
 
-    def _process_transactions(self):
+    def _process_transactions(self, date_from=None, date_to=None):
         acquirer = self.env["payment.acquirer"].search(
             [("provider", "=", "siro")], limit=1
         )
@@ -69,16 +68,21 @@ class PaymentTransactionSIRO(models.Model):
         RENDICION_URL = "https://apisiro.bancoroela.com.ar/siro/listados/proceso"
         acquirer._get_access_token()
 
-        today = fields.Datetime.now()
-        yesterday = today - timedelta(days=1)
+        today = fields.Date.today()
+        # yesterday = today - timedelta(days=1)
+        yesterday = fields.Date.substract(today, days=1)
 
         headers = {
             "Authorization": f"Bearer {acquirer.siro_access_token}",
             "Content-Type": "application/json",
         }
         payload = {
-            "fecha_desde": yesterday.strftime("%Y-%m-%d"),
-            "fecha_hasta": today.strftime("%Y-%m-%d"),
+            # "fecha_desde": yesterday.strftime("%Y-%m-%d"),
+            # "fecha_desde": fields.Date.to_string(yesterday),
+            "fecha_desde": date_from if date_from else yesterday,
+            # "fecha_hasta": today.strftime("%Y-%m-%d"),
+            # "fecha_hasta": fields.Date.to_string(today),
+            "fecha_hasta": date_to if date_to else today,
             "cuit_administrador": acquirer.siro_username,
             "nro_empresa": acquirer.siro_nro_empresa,
         }
@@ -116,3 +120,15 @@ class PaymentTransactionSIRO(models.Model):
             )
         else:
             _logger.info(f"{success_msg} No se crearon transacciones nuevas.")
+
+
+class PaymentTransactionWizard(models.TransientModel):
+    _name = "payment.transaction.wizard"
+    _description = "Modelo para procesar transacciones manualmente"
+
+    date_from = fields.Date(string="Fecha desde", required=True)
+    date_to = fields.Date(string="Fecha hasta", required=True)
+
+    def process_transactions_manually(self):
+        self.ensure_one()
+        PaymentTransactionSIRO._process_transactions(self.date_from, self.date_to)

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+            <record id="payment_acquirer_form_siro" model="ir.ui.view">
+                <field name="name">payment.acquirer.form.siro</field>
+                <field name="model">payment.acquirer</field>
+                <field name="inherit_id" ref="payment.acquirer_form"/>
+                <field name="arch" type="xml">
+                    <xpath expr='//group[@name="acquirer"]' position='inside'>
+                        <group attrs="{'invisible': [('provider', '!=', 'siro')]}">
+                            <field name="siro_username"/>
+                            <field name="siro_nro_empresa"/>
+                            <field name="siro_password" password="True"/>
+                            <field name="siro_access_token" readonly="1"/>
+                            <field name="siro_access_token_expiry" readonly="1"/>
+                        </group>
+                    </xpath>
+                    <xpath expr="//form/sheet/group" position="inside">
+                        <button name="%(payment_transaction_wizard_action)d"
+                            string="Procesar transacciones manualmente"
+                            type="action"
+                            class="btn-primary"/>
+                    </xpath>
+                </field>
+            </record>
+
+            <record id="payment_transaction_form_siro" model="ir.ui.view">
+                <field name="name">payment.transaction.form.siro</field>
+                <field name="model">payment.transaction</field>
+                <field name="inherit_id" ref="payment.transaction_form"/>
+                <field name="arch" type="xml">
+                    <xpath expr="//field[@name='date']" position="after">
+                        <field name="siro_payment_id" attrs="{'invisible': [('provider', '!=', 'siro')]}"/>
+                    </xpath>
+                </field>
+            </record>
+
+            <record id="payment_transaction_form_wizard" model="ir.ui.view">
+                <field name="name">payment.transaction.form.wizard</field>
+                <field name="model">payment.transaction.wizard</field>
+                <field name="arch" type="xml">
+                    <form string="Procesar transacciones manualmente">
+                        <sheet>
+                            <group>
+                                <field name="date_from"/>
+                                <field name="date_to"/>
+                            </group>
+                        </sheet>
+                        <footer>
+                            <button name="process_transactions_manually" string="Procesar" type="object" class="btn-primary"/>
+                            <button string="Cancelar" class="btn-default" special="cancel"/>
+                        </footer>
+                    </form>
+                </field>
+            </record>
+
+            <record id="payment_transaction_wizard_action" model="ir.actions.act_window">
+                <field name="name">Procesar transacciones manualmente</field>
+                <field name="res_model">payment.transaction.wizard</field>
+                <field name="view_mode">form</field>
+                <field name="view_id" ref="payment_transaction_form_wizard"/>
+                <field name="target">new</field>
+            </record>
+        
+    </data>
+</odoo>
+

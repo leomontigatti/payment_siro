@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record model="ir.cron" id="process_siro_transactions">
-        <field name="name">Consultar Cobranzas Siro </field>
+        <field name="name">Consultar cobranzas SIRO </field>
         <field name="model_id" ref="payment.model_payment_transaction"/>
         <field name="state">code</field>
         <field name="code">model._process_transactions()</field>
