@@ -2,6 +2,14 @@
 <odoo>
     <data>
 
+            <record id="payment_transaction_wizard_action" model="ir.actions.act_window">
+                <field name="name">Procesar transacciones manualmente</field>
+                <field name="res_model">payment.transaction.wizard</field>
+                <field name="view_mode">form</field>
+                <field name="view_id" ref="payment_transaction_form_wizard"/>
+                <field name="target">new</field>
+            </record>
+
             <record id="payment_acquirer_form_siro" model="ir.ui.view">
                 <field name="name">payment.acquirer.form.siro</field>
                 <field name="model">payment.acquirer</field>
@@ -14,13 +22,11 @@
                             <field name="siro_password" password="True"/>
                             <field name="siro_access_token" readonly="1"/>
                             <field name="siro_access_token_expiry" readonly="1"/>
+                            <button name="%(payment_transaction_wizard_action)d"
+                                string="Procesar transacciones manualmente"
+                                type="action"
+                                class="btn-primary"/>
                         </group>
-                    </xpath>
-                    <xpath expr="//form/sheet/group" position="inside">
-                        <button name="%(payment_transaction_wizard_action)d"
-                            string="Procesar transacciones manualmente"
-                            type="action"
-                            class="btn-primary"/>
                     </xpath>
                 </field>
             </record>
@@ -53,14 +59,6 @@
                         </footer>
                     </form>
                 </field>
-            </record>
-
-            <record id="payment_transaction_wizard_action" model="ir.actions.act_window">
-                <field name="name">Procesar transacciones manualmente</field>
-                <field name="res_model">payment.transaction.wizard</field>
-                <field name="view_mode">form</field>
-                <field name="view_id" ref="payment_transaction_form_wizard"/>
-                <field name="target">new</field>
             </record>
         
     </data>
