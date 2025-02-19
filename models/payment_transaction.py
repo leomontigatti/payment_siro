@@ -22,7 +22,6 @@ class PaymentTransactionSIRO(models.Model):
             [("internal_code", "=", customer_id)], limit=1
         )
         amount = float(paid_amount) / 100
-        date = f"{payment_date[6:8]}/{payment_date[4:6]}/{payment_date[0:4]}"
         invoices = self.env["account.move"].search(
             [("partner_id", "=", partner.id), ("amount_residual", "!=", 0)]
         )
@@ -38,11 +37,13 @@ class PaymentTransactionSIRO(models.Model):
                 {
                     "acquirer_id": acquirer.id,
                     "amount": amount,
-                    "reference": f"{method}Importe: ${amount}. Fecha de pago: {date}.",
+                    "reference": f"{method}Importe: ${amount}. Fecha de pago: {payment_date[6:8]}/{payment_date[4:6]}/{payment_date[0:4]}.",
                     "state": "done",
                     "type": "server2server",
                     "partner_id": partner.id,
-                    "date": fields.Datetime.to_datetime(date),
+                    "date": fields.Datetime.to_datetime(
+                        f"{payment_date[0:4]}-{payment_date[4:6]}-{payment_date[6:8]}"
+                    ),
                     "invoice_ids": invoices.ids,
                     "currency_id": currency.id,
                     "siro_payment_id": payment_id,
