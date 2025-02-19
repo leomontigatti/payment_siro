@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime
+from datetime import date, datetime, timedelta
 
 import requests
 from odoo import fields, models
@@ -69,9 +69,8 @@ class PaymentTransactionSIRO(models.Model):
         RENDICION_URL = "https://apisiro.bancoroela.com.ar/siro/listados/proceso"
         acquirer._get_access_token()
 
-        today = fields.Date.today()
-        # yesterday = today - timedelta(days=1)
-        yesterday = fields.Date.subtract(today, days=1)
+        today = date.today()
+        yesterday = today - timedelta(days=1)
 
         headers = {
             "Authorization": f"Bearer {acquirer.siro_access_token}",
