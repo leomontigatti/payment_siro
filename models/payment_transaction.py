@@ -70,7 +70,7 @@ class PaymentTransactionSIRO(models.Model):
 
         today = fields.Date.today()
         # yesterday = today - timedelta(days=1)
-        yesterday = fields.Date.substract(today, days=1)
+        yesterday = fields.Date.subtract(today, days=1)
 
         headers = {
             "Authorization": f"Bearer {acquirer.siro_access_token}",
