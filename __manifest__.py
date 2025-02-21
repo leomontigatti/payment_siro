@@ -3,7 +3,7 @@
     "version": "1.2",
     "summary": "Integration with SIRO for payment processing",
     "category": "Accounting/Payment Acquirers",
-    "author": "Franco",
+    "author": "Franco Nicolau",
     "depends": ["account", "payment", "account_payment_group"],
     "data": [
         "security/ir.model.access.csv",
