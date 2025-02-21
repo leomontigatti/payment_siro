@@ -96,9 +96,8 @@ class PaymentTransactionSIRO(models.Model):
             try:
                 response.raise_for_status()
             except requests.exceptions.HTTPError:
-                message = response.json().get("message", "")
                 _logger.error(
-                    f"Error en la comunicación con la API. Detalles: {message}"
+                    "Error en la comunicación con la API. Por favor revise las credenciales."
                 )
                 return False
         except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
