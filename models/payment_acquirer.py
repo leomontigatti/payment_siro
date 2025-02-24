@@ -69,3 +69,4 @@ class PaymentAcquirerSIRO(models.Model):
         )
 
         _logger.info("Token de acceso SIRO actualizado.")
+

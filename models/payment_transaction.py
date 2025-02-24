@@ -1,5 +1,6 @@
 import logging
 from datetime import date, datetime, timedelta
+from dateutil import relativedelta
 
 import requests
 from odoo import fields, models
@@ -123,3 +124,30 @@ class PaymentTransactionSIRO(models.Model):
             )
         else:
             _logger.info(f"{success_msg} No se crearon transacciones nuevas.")
+
+
+    def _post_process_after_done(self):
+        self._reconcile_after_transaction_done()
+        self._log_payment_transaction_received()
+        self.write({'is_processed': True})
+        return True
+
+
+    def _cron_post_process_after_done(self):
+        if not self:
+            ten_minutes_ago = datetime.now() - relativedelta.relativedelta(minutes=10)
+            # we don't want to forever try to process a transaction that doesn't go through
+            retry_limit_date = datetime.now() - relativedelta.relativedelta(days=30)
+            # we retrieve all the payment tx that need to be post processed
+            self = self.search([('state', '=', 'done'),
+                                ('is_processed', '=', False),
+                                ('date', '<=', ten_minutes_ago),
+                                ('date', '>=', retry_limit_date),
+                            ])
+        for tx in self:
+            try:
+                tx._post_process_after_done()
+                self.env.cr.commit()
+            except Exception as e:
+                _logger.exception("Transaction post processing failed")
+                self.env.cr.rollback()

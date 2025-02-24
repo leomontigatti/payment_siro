@@ -4,7 +4,7 @@
     "summary": "Integration with SIRO for payment processing",
     "category": "Accounting/Payment Acquirers",
     "author": "Franco Nicolau",
-    "depends": ["account", "payment", "account_payment_group"],
+    "depends": ["account", "payment"],
     "data": [
         "security/ir.model.access.csv",
         "data/siro_journal_data.xml",
