@@ -40,7 +40,7 @@ class PaymentTransactionSIRO(models.Model):
                 {
                     "acquirer_id": acquirer.id,
                     "amount": amount,
-                    "reference": f"{method}Importe: ${amount}. Fecha de pago: {payment_date[6:8]}/{payment_date[4:6]}/{payment_date[0:4]}.",
+                    "reference": f"{method}Importe: ${amount}. Fecha de pago: {payment_date[6:8]}/{payment_date[4:6]}/{payment_date[0:4]}. ID:{payment_id}",
                     "state": "done",
                     "type": "server2server",
                     "partner_id": partner.id,
