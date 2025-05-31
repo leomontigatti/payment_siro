@@ -26,7 +26,7 @@ class PaymentTransactionSIRO(models.Model):
         date_time = datetime.strptime(payment_date, "%Y%m%d")
         amount = float(paid_amount) / 100
         invoices = self.env["account.move"].search(
-            [("partner_id", "=", partner.id), ("amount_residual", "!=", 0)]
+            [("partner_id", "=", partner.id), ("amount_residual", "!=", 0), ("state", "not in", ['draft', 'cancel'])]
         )
         currency = self.env["res.currency"].search([("name", "=", "ARS")], limit=1)
         method = "Pago por transferencia. " if payment_method == "TI " else ""
